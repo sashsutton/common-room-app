@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Colors } from '@/constants/theme';
 
@@ -15,14 +15,13 @@ export default function WelcomeScreen() {
 
         {/* Wordmark */}
         <View className="items-center" style={{ marginBottom: 48 }}>
+          <Image
+            source={require('../../assets/logo.png')}
+            style={{ width: 260, height: 55, resizeMode: 'contain' }}
+            accessibilityLabel="The Common Room"
+          />
           <Text
-            className="text-primary text-center"
-            style={{ fontFamily: 'Georgia', fontSize: 36, lineHeight: 44 }}
-          >
-            The Common Room
-          </Text>
-          <Text
-            className="text-subtext text-center text-base mt-3"
+            className="text-subtext text-center text-base mt-4"
             style={{ lineHeight: 24 }}
           >
             A space for reflection, clarity, and purpose
