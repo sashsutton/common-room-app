@@ -89,6 +89,20 @@ export async function generateReflections(userId: string): Promise<string[]> {
   return data.reflections as string[];
 }
 
+export async function fetchMonthlyReflectionCount(userId: string): Promise<number> {
+  const now = new Date();
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+
+  const { count, error } = await supabase
+    .from('reflections')
+    .select('id', { count: 'exact', head: true })
+    .eq('user_id', userId)
+    .gte('generated_at', startOfMonth);
+
+  if (error) throw error;
+  return count ?? 0;
+}
+
 export async function fetchUserNote(userId: string): Promise<UserNote | null> {
   const { data, error } = await supabase
     .from('user_notes')

@@ -20,6 +20,21 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
     );
 
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+    const { count: monthlyCount } = await supabase
+      .from('reflections')
+      .select('id', { count: 'exact', head: true })
+      .eq('user_id', user_id)
+      .gte('generated_at', startOfMonth);
+
+    if ((monthlyCount ?? 0) >= 6) {
+      return new Response(JSON.stringify({ error: 'Monthly limit reached' }), {
+        status: 429,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
     const { data: selections, error: selErr } = await supabase
       .from('user_adopt_selections')
       .select('theme_id, adopt_themes(category, theme, description)')
