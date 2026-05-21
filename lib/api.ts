@@ -5,6 +5,29 @@ type AdoptTheme = Database['public']['Tables']['adopt_themes']['Row'];
 type Reflection = Database['public']['Tables']['reflections']['Row'];
 type UserNote = Database['public']['Tables']['user_notes']['Row'];
 
+export type SelectedTheme = {
+  theme_id: number;
+  selected_at: string;
+  adopt_themes: {
+    id: number;
+    category: string;
+    theme: string;
+    description: string | null;
+    category_colour: string | null;
+  };
+};
+
+export async function fetchSelectedThemesWithDetails(userId: string): Promise<SelectedTheme[]> {
+  const { data, error } = await supabase
+    .from('user_adopt_selections')
+    .select('theme_id, selected_at, adopt_themes(id, category, theme, description, category_colour)')
+    .eq('user_id', userId)
+    .order('selected_at', { ascending: true });
+
+  if (error) throw error;
+  return data as SelectedTheme[];
+}
+
 export async function fetchAdoptThemes(): Promise<AdoptTheme[]> {
   const { data, error } = await supabase
     .from('adopt_themes')

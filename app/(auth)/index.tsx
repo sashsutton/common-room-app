@@ -50,6 +50,28 @@ export default function WelcomeScreen() {
           </Text>
         </View>
 
+        {/* About This App */}
+        <View
+          className="rounded-2xl p-5"
+          style={{ backgroundColor: '#FDF6E3', marginBottom: 48 }}
+        >
+          <Text
+            className="text-primary text-sm mb-2"
+            style={{ fontWeight: '600' }}
+          >
+            About this app
+          </Text>
+          <Text
+            className="text-ink text-sm"
+            style={{ lineHeight: 22 }}
+          >
+            This app is a companion to the in-person Common Room workshops and The Purpose Workbook. It is designed to help members reflect on what matters most, record their selected purpose themes, and revisit their personal points of reflection between sessions.{'\n\n'}
+            Please use this app only if you have attended at least one in-person workshop at a Common Room hub. It is not intended to replace the hosted workshop experience, facilitated conversations, peer support or workbook journey.{'\n\n'}
+            If your local authority, organisation or community is interested in creating a Common Room, please email:{' '}
+            <Text style={{ fontWeight: '600' }}>contact@lifework-lab.com</Text>
+          </Text>
+        </View>
+
         {/* Actions */}
         <View style={{ gap: 12 }}>
           <TouchableOpacity

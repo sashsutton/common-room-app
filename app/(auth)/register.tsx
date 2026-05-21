@@ -56,12 +56,13 @@ export default function RegisterScreen() {
     }
 
     if (data.user) {
-      await supabase.from('profiles').update({
+      await supabase.from('profiles').upsert({
+        id: data.user.id,
         full_name: fullName.trim(),
         gender,
         year_of_birth: parseInt(yearOfBirth, 10),
         home_postcode: postcode.trim().toUpperCase(),
-      }).eq('id', data.user.id);
+      });
     }
 
     setLoading(false);
