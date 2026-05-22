@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useRouter, useFocusEffect } from 'expo-router';
@@ -114,6 +114,19 @@ export default function ReflectionsScreen() {
   const latest = allReflections[0] ?? null;
   const past = allReflections.slice(1);
   const latestTexts = latest ? (latest.content as string[]) : null;
+
+  function confirmGenerate() {
+    if (!userId || generating || atLimit) return;
+    if (!latestTexts) { handleGenerate(); return; }
+    Alert.alert(
+      'Regenerate reflections?',
+      'This will create a new set of 3 reflections and use one of your monthly allowances. Your previous reflections will still be available in history.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'Regenerate', style: 'default', onPress: handleGenerate },
+      ]
+    );
+  }
 
   async function handleGenerate() {
     if (!userId || generating || atLimit) return;
@@ -285,7 +298,7 @@ export default function ReflectionsScreen() {
         }}
       >
         <TouchableOpacity
-          onPress={handleGenerate}
+          onPress={confirmGenerate}
           disabled={generating || atLimit}
           style={{
             backgroundColor: atLimit ? Colors.subtext + 'AA' : Colors.primary,

@@ -145,18 +145,21 @@ export interface Database {
           user_id: string;
           content: string | null;
           updated_at: string;
+          submitted_at: string | null;
         };
         Insert: {
           id?: string;
           user_id: string;
           content?: string | null;
           updated_at?: string;
+          submitted_at?: string | null;
         };
         Update: {
           id?: string;
           user_id?: string;
           content?: string | null;
           updated_at?: string;
+          submitted_at?: string | null;
         };
         Relationships: [];
       };

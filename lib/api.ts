@@ -145,22 +145,58 @@ export async function fetchMonthlyReflectionCount(userId: string): Promise<numbe
   return count ?? 0;
 }
 
-export async function fetchUserNote(userId: string): Promise<UserNote | null> {
+export async function fetchCurrentDraft(userId: string): Promise<UserNote | null> {
   const { data, error } = await supabase
     .from('user_notes')
     .select('*')
     .eq('user_id', userId)
+    .is('submitted_at', null)
     .maybeSingle();
 
   if (error) throw error;
   return data;
 }
 
-export async function upsertUserNote(userId: string, content: string): Promise<void> {
-  const { error } = await supabase.from('user_notes').upsert(
-    { user_id: userId, content, updated_at: new Date().toISOString() },
-    { onConflict: 'user_id' }
-  );
+export async function fetchSubmittedNotes(userId: string): Promise<UserNote[]> {
+  const { data, error } = await supabase
+    .from('user_notes')
+    .select('*')
+    .eq('user_id', userId)
+    .not('submitted_at', 'is', null)
+    .order('submitted_at', { ascending: false });
+
+  if (error) throw error;
+  return data ?? [];
+}
+
+export async function saveDraft(userId: string, content: string): Promise<void> {
+  const { data: existing } = await supabase
+    .from('user_notes')
+    .select('id')
+    .eq('user_id', userId)
+    .is('submitted_at', null)
+    .maybeSingle();
+
+  if (existing) {
+    const { error } = await supabase
+      .from('user_notes')
+      .update({ content, updated_at: new Date().toISOString() })
+      .eq('id', existing.id);
+    if (error) throw error;
+  } else {
+    const { error } = await supabase
+      .from('user_notes')
+      .insert({ user_id: userId, content });
+    if (error) throw error;
+  }
+}
+
+export async function submitNote(userId: string): Promise<void> {
+  const { error } = await supabase
+    .from('user_notes')
+    .update({ submitted_at: new Date().toISOString() })
+    .eq('user_id', userId)
+    .is('submitted_at', null);
 
   if (error) throw error;
 }
