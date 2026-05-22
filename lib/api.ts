@@ -80,12 +80,24 @@ export async function fetchLatestReflection(userId: string): Promise<Reflection 
   return data;
 }
 
-export async function generateReflections(userId: string): Promise<string[]> {
+export async function generateReflections(_userId: string): Promise<string[]> {
+  const { data: { session } } = await supabase.auth.getSession();
   const { data, error } = await supabase.functions.invoke('generate-reflections', {
-    body: { user_id: userId },
+    body: {},
+    headers: session?.access_token
+      ? { Authorization: `Bearer ${session.access_token}` }
+      : undefined,
   });
 
-  if (error) throw error;
+  if (error) {
+    // Supabase puts the function response body in error.context on non-2xx
+    try {
+      const body = await (error as any).context?.json?.();
+      throw new Error(body?.error ?? error.message);
+    } catch (inner: any) {
+      throw new Error(inner?.message ?? error.message);
+    }
+  }
   return data.reflections as string[];
 }
 

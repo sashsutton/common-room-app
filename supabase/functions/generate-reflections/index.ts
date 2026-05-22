@@ -12,13 +12,19 @@ serve(async (req) => {
   }
 
   try {
-    const { user_id } = await req.json();
-    if (!user_id) throw new Error('user_id is required');
+    // Authenticate the caller from their JWT — never trust user_id from the body
+    const authHeader = req.headers.get('Authorization');
+    if (!authHeader) throw new Error('Missing authorization header');
 
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL')!,
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
     );
+
+    const token = authHeader.replace('Bearer ', '');
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+    if (authError || !user) throw new Error('Unauthorized');
+    const user_id = user.id;
 
     const now = new Date();
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
@@ -84,18 +90,21 @@ Return ONLY a JSON array of 3 strings. No preamble, no markdown.
         'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
+        model: 'claude-haiku-4-5-20251001',
         max_tokens: 1024,
         messages: [{ role: 'user', content: prompt }],
       }),
     });
 
     if (!anthropicRes.ok) {
-      throw new Error(`Anthropic API error: ${anthropicRes.status}`);
+      const errorBody = await anthropicRes.text();
+      throw new Error(`Anthropic ${anthropicRes.status}: ${errorBody}`);
     }
 
     const anthropicData = await anthropicRes.json();
-    const rawText = anthropicData.content[0].text.trim();
+    let rawText = anthropicData.content[0].text.trim();
+    // Strip markdown code block if the model wrapped the response
+    rawText = rawText.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim();
     const reflections: string[] = JSON.parse(rawText);
 
     if (!Array.isArray(reflections) || reflections.length !== 3) {
