@@ -27,6 +27,8 @@ export default function RootLayout() {
     const inAuth = segments[0] === '(auth)';
     if (session && inAuth) router.replace('/(tabs)/dashboard');
     else if (!session && !inAuth) router.replace('/(auth)');
+  // router is stable from expo-router and does not need to be in deps
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session, segments]);
 
   if (session === undefined) {

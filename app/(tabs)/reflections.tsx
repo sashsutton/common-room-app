@@ -136,8 +136,8 @@ export default function ReflectionsScreen() {
       await generateReflections(userId);
       await queryClient.invalidateQueries({ queryKey: ['all-reflections', userId] });
       await queryClient.invalidateQueries({ queryKey: ['monthly-reflection-count', userId] });
-    } catch (err: any) {
-      setGenError(err?.message ?? 'Something went wrong.');
+    } catch (err: unknown) {
+      setGenError(err instanceof Error ? err.message : 'Something went wrong.');
     } finally {
       setGenerating(false);
     }

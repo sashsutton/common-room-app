@@ -103,10 +103,11 @@ export async function generateReflections(_userId: string): Promise<string[]> {
   if (error) {
     // Supabase puts the function response body in error.context on non-2xx
     try {
-      const body = await (error as any).context?.json?.();
+      const ctx = (error as { context?: { json?: () => Promise<{ error?: string }> } }).context;
+      const body = await ctx?.json?.();
       throw new Error(body?.error ?? error.message);
-    } catch (inner: any) {
-      throw new Error(inner?.message ?? error.message);
+    } catch (inner: unknown) {
+      throw new Error(inner instanceof Error ? inner.message : error.message);
     }
   }
   return data.reflections as string[];
