@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter, useFocusEffect } from 'expo-router';
-import { useCallback } from 'react';
+import { Feather } from '@expo/vector-icons';
 import { supabase } from '@/lib/supabase';
 import { fetchSelectedThemesWithDetails } from '@/lib/api';
 import { Colors } from '@/constants/theme';
@@ -49,15 +49,24 @@ export default function DashboardScreen() {
         showsVerticalScrollIndicator={false}
       >
         {/* Header */}
-        <View style={{ paddingTop: 12, marginBottom: 28 }}>
-          <Text style={{ fontFamily: 'Georgia', fontSize: 28, color: Colors.primary, lineHeight: 36 }}>
-            My Purpose
-          </Text>
-          {userName && (
-            <Text style={{ fontSize: 15, color: Colors.subtext, marginTop: 4 }}>
-              {userName}'s selected themes
+        <View style={{ paddingTop: 12, marginBottom: 28, flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+          <View>
+            <Text style={{ fontFamily: 'Georgia', fontSize: 28, color: Colors.primary, lineHeight: 36 }}>
+              My Purpose
             </Text>
-          )}
+            {userName && (
+              <Text style={{ fontSize: 15, color: Colors.subtext, marginTop: 4 }}>
+                {userName}'s selected themes
+              </Text>
+            )}
+          </View>
+          <TouchableOpacity
+            onPress={() => router.push('/profile')}
+            style={{ minHeight: 44, minWidth: 44, alignItems: 'center', justifyContent: 'center' }}
+            activeOpacity={0.7}
+          >
+            <Feather name="user" size={22} color={Colors.primary} />
+          </TouchableOpacity>
         </View>
 
         {/* Loading */}

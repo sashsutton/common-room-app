@@ -115,6 +115,30 @@ export interface Database {
         };
         Relationships: [];
       };
+      purpose_snapshots: {
+        Row: {
+          id: string;
+          user_id: string;
+          captured_at: string;
+          theme_ids: number[];
+          reflection_id: string | null;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          captured_at?: string;
+          theme_ids: number[];
+          reflection_id?: string | null;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          captured_at?: string;
+          theme_ids?: number[];
+          reflection_id?: string | null;
+        };
+        Relationships: [];
+      };
       user_notes: {
         Row: {
           id: string;

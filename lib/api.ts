@@ -89,6 +89,25 @@ export async function generateReflections(userId: string): Promise<string[]> {
   return data.reflections as string[];
 }
 
+export type PurposeSnapshot = {
+  id: string;
+  captured_at: string;
+  theme_ids: number[];
+  reflection_id: string | null;
+  themes?: { id: number; theme: string; category: string; category_colour: string | null }[];
+};
+
+export async function fetchPurposeHistory(userId: string): Promise<PurposeSnapshot[]> {
+  const { data, error } = await supabase
+    .from('purpose_snapshots')
+    .select('id, captured_at, theme_ids, reflection_id')
+    .eq('user_id', userId)
+    .order('captured_at', { ascending: false });
+
+  if (error) throw error;
+  return data as PurposeSnapshot[];
+}
+
 export async function fetchMonthlyReflectionCount(userId: string): Promise<number> {
   const now = new Date();
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();

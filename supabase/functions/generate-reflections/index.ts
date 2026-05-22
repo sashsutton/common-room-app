@@ -104,13 +104,19 @@ Return ONLY a JSON array of 3 strings. No preamble, no markdown.
 
     const themeIds = selections.map((s: any) => s.theme_id);
 
-    const { error: insertErr } = await supabase.from('reflections').insert({
-      user_id,
-      theme_ids: themeIds,
-      content: reflections,
-    });
+    const { data: insertedReflection, error: insertErr } = await supabase
+      .from('reflections')
+      .insert({ user_id, theme_ids: themeIds, content: reflections })
+      .select('id')
+      .single();
 
     if (insertErr) throw insertErr;
+
+    await supabase.from('purpose_snapshots').insert({
+      user_id,
+      theme_ids: themeIds,
+      reflection_id: insertedReflection.id,
+    });
 
     return new Response(JSON.stringify({ reflections }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
