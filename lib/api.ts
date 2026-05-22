@@ -80,6 +80,17 @@ export async function fetchLatestReflection(userId: string): Promise<Reflection 
   return data;
 }
 
+export async function fetchAllReflections(userId: string): Promise<Reflection[]> {
+  const { data, error } = await supabase
+    .from('reflections')
+    .select('*')
+    .eq('user_id', userId)
+    .order('generated_at', { ascending: false });
+
+  if (error) throw error;
+  return data ?? [];
+}
+
 export async function generateReflections(_userId: string): Promise<string[]> {
   const { data: { session } } = await supabase.auth.getSession();
   const { data, error } = await supabase.functions.invoke('generate-reflections', {
