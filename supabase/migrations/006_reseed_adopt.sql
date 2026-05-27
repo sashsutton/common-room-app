@@ -1,8 +1,7 @@
--- Seed data for ADOPT themes
--- 39 themes across 5 categories, sourced from ADOPT_DATABASE_280426.xlsx
--- category_colour matches constants/theme.ts CategoryColors
--- description     = Column D (first person mini description)
--- third_person_description = Column E (third person full description)
+-- Re-seed adopt_themes with correct data from ADOPT_DATABASE_280426.xlsx
+-- Clears AI-generated placeholder data and replaces with accurate source content
+
+truncate table adopt_themes restart identity cascade;
 
 insert into adopt_themes (category, theme, description, third_person_description, category_colour) values
 

@@ -71,40 +71,16 @@ export function ThemeInfoModal({ theme, onClose }: ThemeInfoModalProps) {
             contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 48 }}
             showsVerticalScrollIndicator={false}
           >
-            {theme?.description && (
-              <View style={{ marginBottom: 20 }}>
-                <Text style={{ fontSize: 12, fontWeight: '600', color: Colors.subtext, textTransform: 'uppercase', letterSpacing: 0.8, marginBottom: 8 }}>
-                  In your own words
-                </Text>
-                <Text
-                  style={{
-                    fontFamily: 'Georgia',
-                    fontSize: 16,
-                    color: Colors.text,
-                    lineHeight: 26,
-                    fontStyle: 'italic',
-                  }}
-                >
-                  {theme.description}
-                </Text>
-              </View>
-            )}
-
             {theme?.third_person_description && (
-              <View style={{ marginBottom: 24 }}>
-                <Text style={{ fontSize: 12, fontWeight: '600', color: Colors.subtext, textTransform: 'uppercase', letterSpacing: 0.8, marginBottom: 8 }}>
-                  What this means
-                </Text>
-                <Text
-                  style={{
-                    fontSize: 15,
-                    color: Colors.text,
-                    lineHeight: 24,
-                  }}
-                >
-                  {theme.third_person_description}
-                </Text>
-              </View>
+              <Text
+                style={{
+                  fontSize: 15,
+                  color: Colors.text,
+                  lineHeight: 24,
+                }}
+              >
+                {theme.third_person_description}
+              </Text>
             )}
           </ScrollView>
 

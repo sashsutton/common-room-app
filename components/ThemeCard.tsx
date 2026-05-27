@@ -66,14 +66,12 @@ export function ThemeCard({ theme, selected, disabled, onSelect, onInfo }: Theme
         <View style={{ flex: 1, marginRight: 4 }}>
           <Text
             style={{ fontFamily: 'Georgia', fontSize: 16, color: Colors.text, lineHeight: 22 }}
-            numberOfLines={2}
           >
             {theme.theme}
           </Text>
           {theme.description ? (
             <Text
               style={{ fontSize: 13, color: Colors.subtext, marginTop: 2, lineHeight: 18 }}
-              numberOfLines={1}
             >
               {theme.description}
             </Text>
